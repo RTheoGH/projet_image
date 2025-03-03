@@ -5,7 +5,7 @@
 
 int main(int argc, char* argv[])
 {
-    char cNomImgLue[250], cNomImgEcrite[250];
+    char cNomImgLue[250];
     int nH, nW, nTaille;
     
     if (argc != 2) 
@@ -27,11 +27,11 @@ int main(int argc, char* argv[])
     int histo[256];
     for(int i=0;i<256;i++) histo[i] = 0;
 
-    for (int i=0; i < nH; i++)
-    for (int j=0; j < nW; j++)
-        {
+    for (int i=0; i < nH; i++){
+        for (int j=0; j < nW; j++){
             histo[ImgIn[i*nW+j]] += 1;
         }
+    }
 
     for(int i=0;i<256;i++){
         printf("%d %d\n",i,histo[i]);
