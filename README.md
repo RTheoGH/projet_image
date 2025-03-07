@@ -11,6 +11,13 @@ Compilation
 chmod +x compil.sh 
 ./compil.sh
 ```
+---
+
+Etape pour la banque d'images :
+
+- Télécharger la banque d'images à cette adresse : https://data.mendeley.com/datasets/kb3ngxfmjw/1
+- Créer un dossier "banque"
+- Mettre les images dans le dossier
 
 ---
 
