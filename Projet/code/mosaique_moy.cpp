@@ -2,6 +2,7 @@
 #include <string>
 #include <cmath>
 #include <float.h>
+#include <ctime>
 #include "image_ppm.h"
 
 struct Image{
