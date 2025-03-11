@@ -65,6 +65,20 @@ int main(int argc, char* argv[]) {
     }
 
     ecrire_image_ppm(cNomImgEcrite, ImgOut, nH, nW);
+
+    double eqm = 0.0;
+    for(int i = 0;i < nTaille;i++){
+        double diff = ImgIn[i] - ImgOut[i];
+        eqm += diff * diff;
+    }
+    eqm /= nTaille;
+    if(eqm == 0){
+        printf("Images similaires : eqm = 0");
+        return 0;
+    };
+
+    double psnr = 10* std::log10((255*255)/eqm);
+    printf("PSNR : %.2f dB\n",psnr);
     
     free(ImgIn);
     free(ImgOut);
