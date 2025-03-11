@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
     int nH, nW, nTaille, tailleBloc, nbrImagettes;
     
     if (argc != 5) {
-        printf("Usage: ImageIn.pgm TailleBloc nbrImagettes \n"); 
+        printf("Usage: ImageIn.pgm ImageOut.pgm TailleBloc nbrImagettes \n"); 
         exit (1) ;
     }
     

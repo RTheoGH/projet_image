@@ -8,7 +8,7 @@ int main(int argc, char* argv[])
     int nH, nW, nTaille, tailleBloc;
     
     if (argc != 4) {
-        printf("Usage: ImageIn.pgm TailleBloc \n"); 
+        printf("Usage: ImageIn.pgm ImageOut.pgm TailleBloc \n"); 
         exit (1) ;
     }
     
