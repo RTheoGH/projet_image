@@ -16,16 +16,17 @@ struct Image{
 int main(int argc, char* argv[])
 {
     char cNomImgLue[250], cNomImgEcrite[250];
-    int nH, nW, nTaille, tailleBloc;
+    int nH, nW, nTaille, tailleBloc, nbrImagettes;
     
-    if (argc != 4) {
-        printf("Usage: ImageIn.pgm TailleBloc \n"); 
+    if (argc != 5) {
+        printf("Usage: ImageIn.pgm TailleBloc nbrImagettes \n"); 
         exit (1) ;
     }
     
     sscanf (argv[1],"%s",cNomImgLue) ;
     sscanf (argv[2],"%s",cNomImgEcrite) ;
     sscanf (argv[3],"%d",&tailleBloc) ;
+    sscanf (argv[4],"%d",&nbrImagettes) ;
 
     OCTET *ImgIn, *ImgOut;
     
@@ -36,10 +37,13 @@ int main(int argc, char* argv[])
     lire_image_pgm(cNomImgLue, ImgIn, nH * nW);
     allocation_tableau(ImgOut, OCTET, nTaille);
 
-    double moyennes[10000];
+    time_t start_time_recup;
+    time(&start_time_recup);
+    printf("Récupération des images...\n");
+    double moyennes[nbrImagettes];
 
     //Moyenne de chaque image dans la banque
-    for(int i=1;i<=10000;i++){
+    for(int i=1;i<=nbrImagettes;i++){
         int nH_i,nW_i,nTaille_i;
 
         // Recupere et lit chaque imagette de la banque d'images
@@ -58,6 +62,16 @@ int main(int argc, char* argv[])
         moyennes[i] = (double)(somme /= nTaille_i);
         free(Img);
     }
+
+    time_t end_time_recup;
+    time(&end_time_recup);
+    double duration_recup = difftime(end_time_recup, start_time_recup);
+
+    printf("Temps récupération : %.3f secondes.\n",duration_recup);
+
+    time_t start_time_modif;
+    time(&start_time_modif);
+    printf("Remplacement des blocs...\n");
 
     int nombre_bloc_hauteur = nH / tailleBloc;
     int nombre_bloc_largeur = nW / tailleBloc;
@@ -82,7 +96,7 @@ int main(int argc, char* argv[])
             int best = -1;
 
             // Cherche la meilleure imagette
-            for(int k=1;k<=10000;k++){
+            for(int k=1;k<=nbrImagettes;k++){
                 double comp = std::fabs(moyennes[k]-moyenne);
                 if(comp<compare){
                     compare = comp;
@@ -123,6 +137,12 @@ int main(int argc, char* argv[])
             }
         }
     }
+
+    time_t end_time_modif;
+    time(&end_time_modif);
+    double duration_modif = difftime(end_time_modif, start_time_modif);
+
+    printf("Temps remplacement : %.3f secondes.\n",duration_modif);
 
     ecrire_image_pgm(cNomImgEcrite, ImgOut, nH, nW);
     
