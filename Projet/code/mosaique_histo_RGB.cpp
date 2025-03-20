@@ -64,8 +64,10 @@ int main(int argc, char* argv[]) {
             for(int l = 0;l < tailleBloc;l++){
                 int x_source = (k * nH_i) / tailleBloc;
                 int y_source = (l * nW_i) / tailleBloc;
-                for(int c = 0; c < 3; c++) {
-                    ImgR[(k*tailleBloc+l)*3 + c] = Img[(x_source*nW_i + y_source)*3 + c];
+                if(x_source < nH_i && y_source < nW_i){
+                    for(int c = 0; c < 3; c++){
+                        ImgR[(k * tailleBloc + l) * 3 + c] = Img[(x_source * nW_i + y_source) * 3 + c];
+                    }
                 }
             }
         }
@@ -97,31 +99,52 @@ int main(int argc, char* argv[]) {
     
     for(int i = 0;i < nH / tailleBloc;i++){
         for(int j = 0;j < nW / tailleBloc;j++){
-            std::array<int, 256> histoR{0},histoG{0},histoB{0};
+            std::array<int,256> histoR{0},histoG{0},histoB{0};
     
             for(int k = 0;k < tailleBloc;k++) {
                 for(int l = 0;l < tailleBloc;l++) {
                     int x = i * tailleBloc + k;
                     int y = j * tailleBloc + l;
                     histoR[ImgIn[(x*nW+y)*3]]++;
-                    histoG[ImgIn[(x*nW + y)*3+1]]++;
+                    histoG[ImgIn[(x*nW+y)*3+1]]++;
                     histoB[ImgIn[(x*nW+y)*3+2]]++;
                 }
+            }
+
+            for (int l = 0; l < 256; l++) {
+                if (histoR[l] == 0) histoR[l] = 1e-10;
+                if (histoG[l] == 0) histoG[l] = 1e-10;
+                if (histoB[l] == 0) histoB[l] = 1e-10;
             }
     
             double compare = FLT_MAX;
             int best = -1;
     
             for(int k = 0;k < nbrImagettes;k++){
-                double comp = 0.0;
+                std::vector<double> comp(3,0.0);
+                
                 for (int l = 0;l < 256;l++){
-                    comp += sqrt(histoR[l] * listeImages[k].histoR[l]) +
-                            sqrt(histoG[l] * listeImages[k].histoG[l]) +
-                            sqrt(histoB[l] * listeImages[k].histoB[l]);
+                    comp[0] += sqrt(histoR[l] * listeImages[k].histoR[l]);
+                    comp[1] += sqrt(histoG[l] * listeImages[k].histoG[l]);
+                    comp[2] += sqrt(histoB[l] * listeImages[k].histoB[l]);
+                    // comp += sqrt(histoR[l] * listeImages[k].histoR[l]) +
+                    //         sqrt(histoG[l] * listeImages[k].histoG[l]) +
+                    //         sqrt(histoB[l] * listeImages[k].histoB[l]);
                 }
-                comp = -log(comp);
-                if(comp < compare){
-                    compare = comp;
+
+                double somme = 0.0;
+
+                for (int c = 0;c < 3;c++){
+                    if(comp[c] > 0){
+                        comp[c] = -log(comp[c]);
+                    }
+                    somme += comp[c];
+                }
+
+                somme /= 3.0;
+
+                if(somme < compare){
+                    compare = somme;
                     best = k;
                 }
             }
