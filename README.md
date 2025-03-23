@@ -68,6 +68,12 @@ Exemple d'utilisation :
 ./exe/mosaique_histo in/imageIn.pgm out/mosaique/imageOut.pgm taille_bloc nombre_images
 ```
 
+Le programme `mosaique_histo_RGB.cpp` réalise la même chose mais pour des images en couleur.\
+Exemple d'utilisation :
+```bash
+./exe/mosaique_histo_RGB in/imageIn.ppm out/mosaique/imageOut.ppm taille_bloc nombre_images
+```
+
 ---
 
 ### Récupération d'images au format png
