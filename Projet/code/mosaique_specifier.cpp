@@ -13,19 +13,19 @@ struct Image{
         numero(n),moyenne(m){}
 };
 
-void specification(OCTET * Img, OCTET* Bloc, OCTET* Spec, int blocH, int blocW){
+void specification(OCTET * Img,OCTET* Bloc,OCTET* Spec,int blocH,int blocW){
     double* ddp = new double[256]();
     double* ddpBloc = new double[256]();
     double* F = new double[256]();
     double* FBloc = new double[256]();
     double* T = new double[256]();
 
-    for(int i = 0; i<blocH*blocW; i++){
+    for(int i = 0;i < blocH*blocW;i++){
         ddp[Img[i]] += 1.0;
         ddpBloc[Bloc[i]] += 1.0;
     }
 
-    for(int i = 0; i<256; i++){
+    for(int i = 0;i < 256;i++){
         ddp[i] /= (double)(blocH*blocW);
         ddpBloc[i] /= (double)(blocH*blocW);
     }
@@ -38,12 +38,12 @@ void specification(OCTET * Img, OCTET* Bloc, OCTET* Spec, int blocH, int blocW){
         FBloc[i] = FBloc[i-1] + ddpBloc[i];
     }
 
-    for (int i = 0; i < 256; i++) {
+    for(int i = 0;i < 256;i++){
         float diffMin = 1.0f;
         int jBest = 0;
         for (int j = 0; j < 256; j++) {
             float diff = fabs(F[i] - FBloc[j]);
-            if (diff < diffMin) {
+            if(diff < diffMin){
                 diffMin = diff;
                 jBest = j;
             }
@@ -51,7 +51,7 @@ void specification(OCTET * Img, OCTET* Bloc, OCTET* Spec, int blocH, int blocW){
         T[i] = jBest;
     }
 
-    for(int i = 0; i<blocH*blocW; i++){
+    for(int i = 0;i < blocH*blocW;i++){
         Spec[i] = T[Img[i]];
     }
 
