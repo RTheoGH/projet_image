@@ -5,19 +5,11 @@
 #include <iostream>
 #include <cfloat>
 #include <string>
+#include <memory>
 #include <array>
 #include "ImageBase.h"
 
 using namespace std;
-
-struct ImagetteData {
-    size_t index;
-	ImageBase imagette;
-    array<int, 256> greyLevels;
-    
-    ImagetteData(size_t index, const ImageBase& imagette, const array<int, 256>& greyLevels)
-        : index(index), imagette(imagette), greyLevels(greyLevels) {}
-};
 
 unsigned char getMoyennePixel(ImageBase& imIn, int x, int y) {
 	unsigned long sommePixels = 0;
@@ -130,7 +122,7 @@ void seuillageHysteresis(ImageBase& imIn, ImageBase& imOut, int sB, int sH) {
 	}
 }
 
-void compileImagettesData(vector<ImagetteData>& imagettesList, int blockSize, int nbrImagettes) {
+void compileImagettesData(vector<shared_ptr<ImageBase>>& imagettesList, vector<array<int, 256>>& greyLevelsList, int blockSize, int nbrImagettes) {
 	ImageBase imagette;
 	ImageBase imResize(blockSize, blockSize, false);
 	ImageBase imFlou(blockSize, blockSize, false);
@@ -159,7 +151,7 @@ void compileImagettesData(vector<ImagetteData>& imagettesList, int blockSize, in
 		filtreLaplacien(imFlou, imLaplacien);
 		createGradientByPhase(imLaplacien, imPassage0);
 		createImageGradientPassage0(imLaplacien, imPassage0, imGradient);
-		seuillageHysteresis(imGradient, imSeuil, 2, 3);
+		seuillageHysteresis(imGradient, imSeuil, 200, 230);
 
 		// Calcul de l'histogramme
 		for(size_t j = 0; j < blockSize; j++) {
@@ -169,11 +161,12 @@ void compileImagettesData(vector<ImagetteData>& imagettesList, int blockSize, in
         }
     
         // Stockage des données de l'imagette
-        imagettesList.push_back({i, imResize, greyLevels});
+        imagettesList.push_back(make_shared<ImageBase>(imResize));
+        greyLevelsList.push_back(greyLevels);
 	}
 }
 
-void blockReplacement(ImageBase& imIn, ImageBase& imOut, vector<ImagetteData>& imagettesList, int blockSize, int nbrImagettes) {
+void blockReplacement(ImageBase& imIn, ImageBase& imOut, vector<shared_ptr<ImageBase>>& imagettesList, vector<array<int, 256>>& greyLevelsList, int blockSize, int nbrImagettes) {
 	size_t blockWidthNb = imIn.getWidth() / blockSize;
 	size_t blockHeightNb = imIn.getHeight() / blockSize;
 
@@ -189,7 +182,6 @@ void blockReplacement(ImageBase& imIn, ImageBase& imOut, vector<ImagetteData>& i
 	ImageBase imPassage0(blockSize, blockSize, false);
 	ImageBase imGradient(blockSize, blockSize, false);
 	ImageBase imSeuil(blockSize, blockSize, false);
-	ImageBase imagette(blockSize, blockSize, false);
 
 	array<int,256> greyLevels{0};
 
@@ -227,7 +219,7 @@ void blockReplacement(ImageBase& imIn, ImageBase& imOut, vector<ImagetteData>& i
             for (size_t k = 0; k < nbrImagettes; k++) {
                 current = 0.;
                 for (size_t l = 0; l < 256; l++) {
-                    current += sqrt(greyLevels[l] * imagettesList[k].greyLevels[l]);
+                    current += sqrt(greyLevels[l] * greyLevelsList[k][l]);
                 }
                 current = -log(current);
                 if (current < closest) {
@@ -237,7 +229,7 @@ void blockReplacement(ImageBase& imIn, ImageBase& imOut, vector<ImagetteData>& i
             }
 
             // Remplacement du bloc par l'imagette
-			imagette = imagettesList[bestImagette].imagette;
+			ImageBase& imagette = *(imagettesList[bestImagette]);
             for (size_t k = 0; k < blockSize; k++) {
                 for (size_t l = 0; l < blockSize; l++) {
 					int x = j * blockSize + l;
@@ -268,13 +260,14 @@ int main(int argc, char* argv[]) {
 
 	ImageBase imOut(imIn.getWidth(), imIn.getHeight(), imIn.getColor());
 
-	vector<ImagetteData> imagettesList;
+	vector<shared_ptr<ImageBase>> imagettesList;
+	vector<array<int,256>> greyLevelsList;
 
 	time_t startTime;
     time(&startTime);
     cout << "Récupération des images..." << endl;
 
-	compileImagettesData(imagettesList, blockSize, nbrImagettes);
+	compileImagettesData(imagettesList, greyLevelsList, blockSize, nbrImagettes);
 
 	time_t endTime;
     time(&endTime);
@@ -285,7 +278,7 @@ int main(int argc, char* argv[]) {
     time(&startTime);
     cout << "Remplacement des blocs..." << endl;
 
-	blockReplacement(imIn, imOut, imagettesList, blockSize, nbrImagettes);
+	blockReplacement(imIn, imOut, imagettesList, greyLevelsList, blockSize, nbrImagettes);
 
     time(&endTime);
     duration = difftime(endTime, startTime);
