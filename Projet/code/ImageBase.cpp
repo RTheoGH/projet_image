@@ -48,6 +48,29 @@ ImageBase::~ImageBase(void)
 	reset();
 }
 
+ImageBase::ImageBase(const ImageBase& other)
+{
+    width = other.width;
+    height = other.height;
+    isValid = other.isValid;
+
+    if (other.data)
+    {
+        data = (unsigned char*) malloc(width * height);
+        memcpy(data, other.data, width * height);
+    }
+    else
+        data = nullptr;
+
+    if (other.dataD)
+    {
+        dataD = (double*) malloc(width * height * sizeof(double));
+        memcpy(dataD, other.dataD, width * height * sizeof(double));
+    }
+    else
+        dataD = nullptr;
+}
+
 void ImageBase::init()
 {
 	if(isValid)
@@ -64,12 +87,18 @@ void ImageBase::init()
 
 void ImageBase::reset()
 {
-	if(isValid)
-	{
-		free(data);
-		free(dataD);
-	}
-	isValid = false;
+    if (isValid)
+    {
+        if (data) {  
+            free(data);  // Utilisation correcte de free()
+            data = nullptr;
+        }
+        if (dataD) {  
+            free(dataD);  // Utilisation correcte de free()
+            dataD = nullptr;
+        }
+    }
+    isValid = false;
 }
 
 void ImageBase::load(char *filename)
@@ -80,7 +109,7 @@ void ImageBase::load(char *filename)
 
 	if(l <= 4) // Le fichier ne peut pas etre que ".pgm" ou ".ppm"
 	{
-		printf("Chargement de l'image impossible : Le nom de fichier n'est pas conforme, il doit comporter l'extension, et celle ci ne peut être que '.pgm' ou '.ppm'");
+		printf("Chargement de l'image impossible : Le nom de fichier n'est pas conforme, il doit comporter l'extension, et celle ci ne peut ï¿½tre que '.pgm' ou '.ppm'");
 		exit(0);
 	}
 
@@ -108,7 +137,7 @@ void ImageBase::load(char *filename)
 	}
 	else 
 	{
-		printf("Chargement de l'image impossible : Le nom de fichier n'est pas conforme, il doit comporter l'extension, et celle ci ne peut être que .pgm ou .ppm");
+		printf("Chargement de l'image impossible : Le nom de fichier n'est pas conforme, il doit comporter l'extension, et celle ci ne peut ï¿½tre que .pgm ou .ppm");
 		exit(0);
 	}
 	

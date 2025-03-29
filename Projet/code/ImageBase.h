@@ -3,7 +3,7 @@
 *
 * Fichier : ImageBase.h
 *
-* Description : Classe contennant quelques fonctionnalités de base
+* Description : Classe contennant quelques fonctionnalitï¿½s de base
 *
 * Auteur : Mickael Pinto
 *
@@ -45,6 +45,7 @@ public:
 	ImageBase(void);
 	ImageBase(int imWidth, int imHeight, bool isColor);
 	~ImageBase(void);
+	ImageBase(const ImageBase& other);
 	
 	///////////// Methodes
 protected:
