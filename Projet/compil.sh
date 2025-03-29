@@ -8,6 +8,11 @@ if [ ! -d "$output_directory" ]; then
     echo "Created directory: $output_directory"
 fi
 
-g++ -o "$output_directory/mosaique_laplacien" "$input_directory/mosaique_laplacien.cpp" "$input_directory/ImageBase.cpp"
+for file in "$input_directory"/*.cpp; do
+    base_name=$(basename "$file" .cpp)
+    g++ -o "$output_directory/$base_name" "$file"
+    echo "Compiled $file to $output_directory/$base_name"
+
+done
 
 echo "Compilation terminée."

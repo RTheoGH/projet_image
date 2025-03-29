@@ -177,6 +177,12 @@ void blockReplacement(ImageBase& imIn, ImageBase& imOut, vector<ImagetteData>& i
 	size_t blockWidthNb = imIn.getWidth() / blockSize;
 	size_t blockHeightNb = imIn.getHeight() / blockSize;
 
+	cout << "blocHeightNb = " << blockHeightNb << endl;
+	cout << "blocWidthNb = " << blockHeightNb << endl;
+	cout << "getHeight = " << imIn.getHeight() << endl;
+	cout << "getWidth = " << imIn.getWidth() << endl;
+	cout << "blocsize = " << blockSize << endl;
+
 	ImageBase imBlock(blockSize, blockSize, false);
 	ImageBase imFlou(blockSize, blockSize, false);
 	ImageBase imLaplacien(blockSize, blockSize, false);
@@ -189,13 +195,13 @@ void blockReplacement(ImageBase& imIn, ImageBase& imOut, vector<ImagetteData>& i
 
     for (size_t i = 0; i < blockHeightNb; i++) {
 		for (size_t j = 0; j < blockWidthNb; j++) {
-			cout << "i : " << i << ", j : " << j << endl;
+			// cout << "i : " << i << ", j : " << j << endl;
 			
 			// Création du bloc
 			for (size_t k = 0; k < blockSize; k++) {
 				for (size_t l = 0; l < blockSize; l++) {
-					int x = j * blockWidthNb + l;
-					int y = i * blockHeightNb + k;
+					int x = j * blockSize + l;
+					int y = i * blockSize + k;
 					imBlock[k][l] = imIn[y][x];
 				}
 			}
@@ -234,8 +240,8 @@ void blockReplacement(ImageBase& imIn, ImageBase& imOut, vector<ImagetteData>& i
 			imagette = imagettesList[bestImagette].imagette;
             for (size_t k = 0; k < blockSize; k++) {
                 for (size_t l = 0; l < blockSize; l++) {
-					int x = j * blockWidthNb + l;
-					int y = i * blockHeightNb + k;
+					int x = j * blockSize + l;
+					int y = i * blockSize + k;
 					imOut[y][x] = imagette[k][l];
                 }
             }
