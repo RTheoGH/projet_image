@@ -14,7 +14,8 @@ Le principe de la méthode consiste à prendre une grande image, la découper en
 ### Compilation
 
 ```bash
-chmod +x compil.sh 
+chmod +x compil.sh
+chmod +x compil_base.sh
 ./compil.sh
 ```
 
@@ -72,6 +73,21 @@ Le programme `mosaique_histo_RGB.cpp` réalise la même chose mais pour des imag
 Exemple d'utilisation :
 ```bash
 ./exe/mosaique_histo_RGB in/imageIn.ppm out/mosaique/imageOut.ppm taille_bloc nombre_images
+```
+
+---
+
+### Générer des image en mosaiques en utilisant la moyenne de chaque bloc et en spécifiant un histogramme (alternative histogramme)
+Le programme `mosaique_specifier.cpp` permet de générer des images en mosaiques en remplacant les blocs de pixels moyennés par des imagettes de la banque d'images. On spécifie ensuite l'histogramme de chaque bloc sur l'imagette choisie\
+Exemple d'utilisation :
+```bash
+./exe/mosaique_specifier in/imageIn.pgm out/mosaique/imageOut.pgm taille_bloc nombre_images
+```
+
+Le programme `mosaique_specifier_RGB.cpp` réalise la même chose mais pour des images en couleur.\
+Exemple d'utilisation :
+```bash
+./exe/mosaique_specifier_RGB in/imageIn.ppm out/mosaique/imageOut.ppm taille_bloc nombre_images
 ```
 
 ---
