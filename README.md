@@ -10,6 +10,13 @@ REYNIER Théo - JALBAUD Lucas
 L'objectif est de générer une grande image mosaïque à partir d’une grande base d’images de petites tailles appelées imagettes. \
 Le principe de la méthode consiste à prendre une grande image, la découper en blocs de petites tailles et de remplacer chaque bloc de la grande image par l’imagette la plus similaire issue de la grande base d’imagettes.
 
+### Installation de l'interface Pixaique
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
 
 ### Compilation
 

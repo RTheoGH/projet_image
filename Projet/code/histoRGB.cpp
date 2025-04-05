@@ -42,5 +42,5 @@ int main(int argc, char* argv[]){
     }
 
     free(ImgIn);
-    return 1;
+    return EXIT_SUCCESS;
 }

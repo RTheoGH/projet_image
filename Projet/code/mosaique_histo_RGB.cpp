@@ -189,5 +189,5 @@ int main(int argc, char* argv[]) {
 
     free(ImgIn);
     free(ImgOut);
-    return 0;
+    return EXIT_SUCCESS;
 }

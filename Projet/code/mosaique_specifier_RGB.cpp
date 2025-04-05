@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include <stdio.h>
 #include <string>
 #include <cmath>
@@ -262,5 +263,5 @@ int main(int argc, char* argv[]) {
 
     free(ImgIn);
     free(ImgOut);
-    return 1;
+    return EXIT_SUCCESS;
 }

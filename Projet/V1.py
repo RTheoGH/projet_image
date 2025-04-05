@@ -19,26 +19,37 @@ def on_launch():
     if selected_image:
         method = method_combo.get()
         block_size = taille_combo.get()
-        num_images = nb_combo.get()
-        output_image = "output.pgm"
-        
-        command = ["./programme", selected_image, output_image, block_size, num_images]
+        num_images = bb_combo.get()
+        output_image_pgm = "output.pgm"
+        output_image_png = "output.png"
+
+        png_to_pgm_command = ["convert", selected_image, "pgm:output.pgm"]
         try:
+            print(f"Conversion de {selected_image} en PGM...")
+            subprocess.run(png_to_pgm_command, check=True)
+
+            command = ["./exe/mosaique_moy", "output.pgm", output_image_pgm, block_size, num_images]
+            print(f"Exécution de la commande : {command}")
             subprocess.run(command, check=True)
-            display_result(output_image)
+
+            pgm_to_png_command = ["convert", output_image_pgm, output_image_png]
+            print(f"Conversion de {output_image_pgm} en PNG...")
+            subprocess.run(pgm_to_png_command, check=True)
+
+            print("Subprocess terminé")
+            display_result(output_image_png)
         except subprocess.CalledProcessError as e:
             print("Erreur lors de l'exécution :", e)
-
 
 # Ajouter une image
 def on_add_image():
     global selected_image, image_label
-    file_path = filedialog.askopenfilename(filetypes=[("PGM & PPM files", "*.pgm;*.ppm")])
+    file_path = filedialog.askopenfilename(filetypes=[("PNG files", "*.png")])
     if file_path:
         selected_image = file_path
         print(f"Image sélectionnée : {file_path}")
         img = Image.open(selected_image)
-        img.thumbnail((150, 150))
+        img.thumbnail((300, 300))
         img_tk = ImageTk.PhotoImage(img)
         
         if image_label:
@@ -50,19 +61,23 @@ def on_add_image():
             image_label.pack(padx=10, pady=5)
 
 def display_result(output_path):
-    result_img = Image.open(output_path)
-    result_img.thumbnail((200, 200))
-    result_img_tk = ImageTk.PhotoImage(result_img)
-    result_label.config(image=result_img_tk)
-    result_label.image = result_img_tk
+    print(f"Chemin de l'image de sortie : {output_path}")
+    try:
+        result_img = Image.open(output_path)
+        result_img.thumbnail((200, 200))
+        result_img_tk = ImageTk.PhotoImage(result_img)
+        result_label.config(image=result_img_tk)
+        result_label.image = result_img_tk
+    except Exception as e:
+        print(f"Erreur lors de l'affichage du résultat : {e}")
 
 def on_close():
     root.destroy()
 
 root = tk.Tk()
 root.title("Pixaïque")
-root.geometry("700x550")
-root.minsize(500, 400)
+root.geometry("1600x1000")
+root.minsize(700, 550)
 root.configure(bg=theme_bg)
 
 # Cadre principal

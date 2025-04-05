@@ -226,5 +226,5 @@ int main(int argc, char* argv[])
     
     free(ImgIn);
     free(ImgOut);
-    return 1;
+    return EXIT_SUCCESS;
 }
