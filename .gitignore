@@ -6,4 +6,5 @@
 .vscode/
 /Projet/.venv
 /Projet/output.pgm
+/Projet/output.ppm
 /Projet/output.png
